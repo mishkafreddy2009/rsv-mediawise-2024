@@ -1,8 +1,7 @@
+from utils.keywords import keywords
 import whisper
 import os
 import csv
-import json
-from utils.keywords import keywords
 import concurrent.futures
 
 DATASET_PATH = "./dataset/audio/"
@@ -29,15 +28,15 @@ def process_file(file):
     model = whisper.load_model("base")
     result = model.transcribe(file)
     text = result["text"]
-    found = False
-    for word in keywords["Банки"]:
-        if word in text:
-            found = True
-            break
-    return file, found
+    found_categories = []
+    for category, words in keywords.items():
+        for word in words:
+            if word in text:
+                found_categories.append(category)
+                break
+    return file, found_categories
 
-if __name__ == "__main__":
-    model = whisper.load_model("base")
+def main():
     video_names = get_video_names_from_csv("./train_segments.csv")
     file_names = get_exists_files(video_names, get_file_names(DATASET_PATH))[:3]
     files = get_file_paths(DATASET_PATH, file_names)
@@ -45,3 +44,6 @@ if __name__ == "__main__":
         results = [executor.submit(process_file, file) for file in files]
         for result in results:
             print(result)
+
+if __name__ == "__main__":
+    main()
