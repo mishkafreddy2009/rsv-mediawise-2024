@@ -1,3 +1,15 @@
+.kanit-regular {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .kanit-semibold-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 600;
+    font-style: italic;
+  }
+
 .dropArea {
     max-width: 20vw;
     height: 13vw;
@@ -8,6 +20,9 @@
     justify-content: center;
     margin: 0 auto;
     color: white;
+    font: kanit;
+    font-weight: 600;
+
 
     
 }
@@ -31,6 +46,8 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto;
+    font: kanit;
+    font-weight: 600;
     
 
 }
