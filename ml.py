@@ -1,8 +1,7 @@
-from utils.keywords import keywords
 import whisper
 import os
 import csv
-import concurrent.futures
+from utils.keywords import keywords
 
 DATASET_PATH = "./dataset/audio/"
 
@@ -24,26 +23,33 @@ def get_exists_files(video_names, file_names):
 def get_file_paths(path, file_names):
     return [path + file_name for file_name in file_names]
 
-def process_file(file):
-    model = whisper.load_model("base")
-    result = model.transcribe(file)
-    text = result["text"]
-    found_categories = []
-    for category, words in keywords.items():
-        for word in words:
-            if word in text:
-                found_categories.append(category)
-                break
-    return file, found_categories
+# def process_file(file):
+#     model = whisper.load_model("base")
+#     result = model.transcribe(file)
+#     text = result["text"]
+#     found_categories = []
+#     for category, words in keywords.items():
+#         for word in words:
+#             if word in text:
+#                 found_categories.append(category)
+#                 break
+#     return file, found_categories
 
 def main():
-    video_names = get_video_names_from_csv("./train_segments.csv")
-    file_names = get_exists_files(video_names, get_file_names(DATASET_PATH))[:3]
+    model = whisper.load_model("base")
+    video_names = get_video_names_from_csv("/kaggle/input/asdkfsakfjsaf/train_segments.csv")
+    file_names = get_exists_files(video_names, get_file_names(DATASET_PATH))[:30]
     files = get_file_paths(DATASET_PATH, file_names)
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        results = [executor.submit(process_file, file) for file in files]
-        for result in results:
-            print(result)
+    for file in files:
+        found_categories = []
+        result = model.transcribe(file)
+        text = result["text"]
+        for category, words in keywords.items():
+            for word in words:
+                if word in text:
+                    found_categories.append(category)
+        print(file, found_categories)
+
 
 if __name__ == "__main__":
     main()
