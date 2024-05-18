@@ -1,55 +1,141 @@
 import whisper
 import os
 import csv
-from utils.keywords import keywords
+import pandas as pd
 
-DATASET_PATH = "./dataset/audio/"
+keywords = {
+    "банки": [
+            "банк",
+            "банковский",
+            "банковская",
+            "кредит",
+            "депозит",
+            "вклад",
+            "дебетовая карта",
+            "кредитная карта",
+            "ипотека",
+            "онлайн-банкинг",
+            "мобильное приложение",
+            "счет",
+            "услуга",
+            "перевод",
+            "филиал",
+            "сеть",
+            "менеджмент",
+            "риск",
+            "безопасность",
+            "транзакция",
+            "платежная система",
+            "комиссия",
+            "регулировка",
+            "инвестиция",
+            "договор",
+            "ставка",
+            "реформа",
+            "терминал",
+            "брокер",
+            "аналитик",
+            "обмен",
+            "реклама",
+            "страховка",
+            "облигационный рынок",
+            "персонал",
+            "интеграция",
+            "курс",
+            "поддержка",
+            "контракт",
+            "экспертиза",
+            "репутация",
+            "сегментация",
+            "аналитика",
+            "статистика",
+            "тенденция",
+            "экономика",
+            "маркетинг",
+            "банковская интеграция",
+            "банковская репутация",
+            "сбербанк",
+            "втб",
+            "газпромбанк",
+            "альфа-банк",
+            "росбанк",
+            "тинькофф банк",
+            "юникредит банк",
+            "райффайзенбанк",
+            "банк открытие",
+            "промсвязьбанк",
+            "россельхозбанк",
+            "росгосстрах банк",
+            "банк возрождение",
+            "совкомбанк",
+            "банк уралсиб",
+            "московский кредитный банк",
+            "русский стандарт",
+            "почта банк",
+            "россия",
+            "бинбанк",
+            "центрокредит банк",
+            "ак барс банк",
+            "банк зенит",
+            "хоум кредит банк",
+            "банк фк открытие",
+            "банк дом.рф",
+            "роскосмосбанк",
+            "роснефть банк",
+            "восточный банк",
+            "мтс банк",
+            "банк интеза",
+            "югра",
+            "банк ингосстрах",
+            "банк приморье",
+            "ситибанк",
+            "траст",
+            "росевробанк",
+            "интеркоммерц банк",
+            "банк кредит москва",
+            "банк развития технологий",
+            "союз",
+            "кубань кредит",
+            "проминвестбанк",
+            "экспобанк",
+            "фк открытие",
+            "петрокоммерц",
+            "росавтобанк",
+            "банк сетелем",
+            "русфинанс банк"
+            ],
+    "промо": [
+            "реклама",
+            "акция",
+            "скидка",
+            "спецпредложение",
+            "распродажа",
+            "бонус",
+            "подарок",
+            "лотерея",
+            "розыгрыш",
+            "конкурс",
+            "вирусность",
+            "инфлюенсер",
+            "блогер",
+            "брендинг",
+            "промокод",
+            "промоушн",
+            "рекламный ролик",
+            ],
+}
 
-def get_video_names_from_csv(csv_file):
-    ids = []
-    with open(csv_file, 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            if row:
-                ids.append(row[0])
-    return ids
+DATASET_PATH = "/kaggle/input/mediawise-dataset-audio/"
 
-def get_file_names(path):
-    return os.listdir(path)
-
-def get_exists_files(video_names, file_names):
-    return [file_name for file_name in file_names if file_name[:-4] in video_names]
-
-def get_file_paths(path, file_names):
-    return [path + file_name for file_name in file_names]
-
-# def process_file(file):
-#     model = whisper.load_model("base")
-#     result = model.transcribe(file)
-#     text = result["text"]
-#     found_categories = []
-#     for category, words in keywords.items():
-#         for word in words:
-#             if word in text:
-#                 found_categories.append(category)
-#                 break
-#     return file, found_categories
+def get_file_names(csv_file, file_id_header, data_dir):
+    fids = [str(fid) for fid in pd.read_csv(csv_file)[file_id_header]]
+    data_file_names = [file_name for file_name in os.listdir(data_dir)]
+    exist_file_names = [file_name for file_name in data_file_names for fid in fids if fid in file_name]
+    return exist_file_names
 
 def main():
-    model = whisper.load_model("base")
-    video_names = get_video_names_from_csv("/kaggle/input/asdkfsakfjsaf/train_segments.csv")
-    file_names = get_exists_files(video_names, get_file_names(DATASET_PATH))[:30]
-    files = get_file_paths(DATASET_PATH, file_names)
-    for file in files:
-        found_categories = []
-        result = model.transcribe(file)
-        text = result["text"]
-        for category, words in keywords.items():
-            for word in words:
-                if word in text:
-                    found_categories.append(category)
-        print(file, found_categories)
-
+    model = whisper.load_model("medium")
+    file_names = get_file_names("./train_segments.csv", "Advertisement ID", "./dataset/audio/")
 
 if __name__ == "__main__":
     main()
