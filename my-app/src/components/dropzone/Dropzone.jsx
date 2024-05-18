@@ -34,12 +34,12 @@ const Dropzone = () => {
                 onDragLeave={e => dragLeaveHandler(e)}
                 onDragOver={e =>dragStartHandler(e)}
                 onDrop={e => onDropHandler(e)}
-            >Отпустите видео</div>
+            >отпустите файл</div>
             : <div className={styles.NotDropArea}
                 onDragStart={e => dragStartHandler(e)}
                 onDragLeave={e => dragLeaveHandler(e)}
                 onDragOver={e =>dragStartHandler(e)}
-            >Перетащите файлы</div>}
+            >перенесите файлы</div>}
         </div>
     )
   

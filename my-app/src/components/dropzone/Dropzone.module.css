@@ -37,11 +37,11 @@
 
 .NotDropArea{
     border: 3px solid #396D2F;
-    background-color: #396D2F;
+    background-color: white;
     border-radius: 15px;
-    color: white;
-    width: 20vw;
-    height: 13vw;
+    color: #396D2F;
+    width: 50vw;
+    height: 20vw;
     display: flex;
     align-items: center;
     justify-content: center;

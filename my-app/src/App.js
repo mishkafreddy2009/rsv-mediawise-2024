@@ -22,7 +22,7 @@ function App() {
       <Header /> 
       <form >
       <Checkbox />
-      <Time />
+      {/* <Time /> */}
       <Kinds />
       <Dropzone />
       <SelectFile />
