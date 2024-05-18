@@ -9,3 +9,13 @@ create expanded segmentation of client creative by categories, subcategories and
 ## solution
 
 created user-friendly web-application where user can upload their own .xls file with info about videos IDs, etc., then we process these videos to get get segmentation info and then user can download output .xls file that contain videos IDs segmented by categories.
+
+## used technologies
+
+- Python
+    - FastAPI
+    - whisper
+    - pandas
+    - pymorphy
+- React
+- Docker
