@@ -3,16 +3,18 @@ import style from './Time.module.css'
 
 const Time = () => {
     return (
-        <div>
+        <div className={style.main}>
+            
             <div className="before">
                 <p>From</p>
                 <input type="text" />
             </div>
-            
+
             <div className="after">
                 <p>to</p>
                 <input type="text" />
             </div>
+            
         </div>
     )
 }

@@ -52,6 +52,7 @@ const Checkbox = () => {
 
         <div key={1} className={styles.trp}> <label> TRP</label>
             <input 
+            required
             type="checkbox"
             onClick={() => setActiveCheckbox(1)}
             checked={1 === activeCheckbox}
@@ -59,6 +60,7 @@ const Checkbox = () => {
          </div>
          <div key={2} className={styles.cost}> <label> Cost</label>
             <input 
+            required
             type="checkbox"
             onClick={() => setActiveCheckbox(2)}
             checked={2 === activeCheckbox}
