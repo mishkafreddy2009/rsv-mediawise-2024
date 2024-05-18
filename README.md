@@ -1,7 +1,7 @@
 # rsv-mediawise-2024
 
-решение для кейса "креативный фильтр" от компании Media Wise на хакатоне "Цифровой Прорыв 2024: сезон искусственный интеллект"
+AI soultion for "Creative filter" case from company Media Wise at hackathon "Цифровой Прорыв 2024: сезон искусственный интеллект".
 
 ## задача
 
-реализовать расширенную сегментацию креатива клиента по категориям, подкатегориям и подподкатегориям.
+create expanded segmentation of client creative by categories, subcategories and subsubcategories.
