@@ -1,57 +1,42 @@
 import whisper
 import os
-import csv
 import pandas as pd
+import pymorphy2 as pm2
 
 keywords = {
     "банки": [
             "банк",
             "банковский",
-            "банковская",
             "кредит",
             "депозит",
             "вклад",
+            "дебетовый",
+            "кредитный",
             "дебетовая карта",
             "кредитная карта",
             "ипотека",
             "онлайн-банкинг",
-            "мобильное приложение",
-            "счет",
-            "услуга",
+            "мобильный банк",
             "перевод",
-            "филиал",
-            "сеть",
-            "менеджмент",
-            "риск",
-            "безопасность",
             "транзакция",
             "платежная система",
             "комиссия",
-            "регулировка",
+            "экономическая регулировка",
             "инвестиция",
-            "договор",
+            "кредитный договор",
+            "договор с банком",
             "ставка",
-            "реформа",
-            "терминал",
+            "банковский терминал",
             "брокер",
             "аналитик",
             "обмен",
-            "реклама",
             "страховка",
             "облигационный рынок",
-            "персонал",
-            "интеграция",
-            "курс",
-            "поддержка",
-            "контракт",
-            "экспертиза",
-            "репутация",
-            "сегментация",
+            "сотрудники банка",
+            "банковский контракт",
             "аналитика",
-            "статистика",
             "тенденция",
             "экономика",
-            "маркетинг",
             "банковская интеграция",
             "банковская репутация",
             "сбербанк",
@@ -102,7 +87,9 @@ keywords = {
             "петрокоммерц",
             "росавтобанк",
             "банк сетелем",
-            "русфинанс банк"
+            "русфинанс банк",
+            "кэшбек",
+            "tinkoff",
             ],
     "промо": [
             "реклама",
@@ -115,27 +102,91 @@ keywords = {
             "лотерея",
             "розыгрыш",
             "конкурс",
-            "вирусность",
-            "инфлюенсер",
-            "блогер",
-            "брендинг",
             "промокод",
-            "промоушн",
-            "рекламный ролик",
+            "всего за",
+            "всего лишь",
+            "лояльность",
+            "товар",
+            "грамм",
+            "килограмм",
             ],
+    "имидж": [
+            "имидж",
+            "репутация",
+            "брендинг",
+            "позиционирование",
+            "видение",
+            "ценности",
+            "культура",
+            "лидерство",
+            "команда",
+            "экспертиза",
+            "качество",
+            "надежность",
+            "отзывчивость",
+            "уважение",
+            "доверие",
+            "ответственность",
+            "устойчивость",
+            "социальная ответственность",
+            "экологическая ответственность",
+            "финансовая ответственность",
+            "кризисное управление",
+            ],
+    "социальные сети": [
+            "подписываться",
+            "отписываться",
+            "лайкать",
+            "репостить",
+            "делиться",
+            "комментировать",
+            "подписаться",
+            "отписаться",
+            "поделиться",
+            "лайкнуть",
+            "комментировать",
+            "репостнуть",
+            "зарегистрироваться",
+            "подписчик",
+            "фолловер",
+            "лайк",
+            "подписка",
+            "репост",
+            "комментарий",
+        ]
 }
 
-DATASET_PATH = "/kaggle/input/mediawise-dataset-audio/"
+DATA_DIR = "/kaggle/input/mediawise-dataset-audio/"
+morph = pm2.MorphAnalyzer(lang="ru")
 
-def get_file_names(csv_file, file_id_header, data_dir):
-    fids = [str(fid) for fid in pd.read_csv(csv_file)[file_id_header]]
-    data_file_names = [file_name for file_name in os.listdir(data_dir)]
-    exist_file_names = [file_name for file_name in data_file_names for fid in fids if fid in file_name]
-    return exist_file_names
+def get_file_names(csv_file, table_header, data_dir):
+    dir_files = os.listdir(data_dir)
+    file_ids = pd.read_csv(csv_file)[table_header].tolist()
+    file_names = [file_name for file_name in dir_files if any(str(file_id) in file_name for file_id in file_ids)]
+    return file_names
+
+def transcribe_file(model, data_dir, file_name):
+    result = model.transcribe(data_dir + file_name)
+    text = result["text"]
+    return text.lower()
+
+def get_word_lexemes(word):
+    return [x.word for x in morph.parse(word)[0].lexeme]
+
+def process_categories(text):
+    categories = {category for category, words in keywords.items()
+                  for word in words
+                  for word_lexeme in get_word_lexemes(word)
+                  if word_lexeme in text}
+    return categories
 
 def main():
     model = whisper.load_model("medium")
-    file_names = get_file_names("./train_segments.csv", "Advertisement ID", "./dataset/audio/")
+    file_names = get_file_names("/kaggle/input/asdkfsakfjsaf/train_segments.csv", "Advertisement ID", DATA_DIR)
+    for file_name in file_names:
+        text = transcribe_file(model, DATA_DIR, file_name)
+        categories = process_categories(text)
+        print(file_name, categories)
 
 if __name__ == "__main__":
     main()
