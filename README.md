@@ -12,10 +12,10 @@ created user-friendly web-application where user can upload their own .xls file 
 
 ## used technologies
 
-- Python
-    - FastAPI
+- python
+    - fastapi
     - whisper
     - pandas
     - pymorphy
-- React
-- Docker
+- react
+- docker
